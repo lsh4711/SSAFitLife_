@@ -119,7 +119,7 @@
           <button class="mypage-close-button" @click="mypageSidePanel">닫기</button>
           <h2>마이페이지 화면</h2>
           <button @click="logout">로그아웃</button>
-          <p>여기에 원하는 내용을 추가하세요.</p>
+          <p>여기에 원하는 내용을 추가하세요.</p> 
         </div>
       </transition>
     </div>
