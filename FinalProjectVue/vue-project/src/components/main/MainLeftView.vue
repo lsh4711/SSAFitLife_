@@ -3,27 +3,40 @@
         <div class ="winter">WINTER</div>
         <div class ="sleeping">SLEEPING</div>
         
-        <RouterLink class="link">
+        <RouterLink class="link" :to="{name: 'front'}">
             <img src="/homeButton.png" alt="Home" /><br>홈
         </RouterLink>
-        <RouterLink class="link">
-            <img src="/weightMangeMutton.png" alt="WeightMange" /><br>체중관리
+        <RouterLink :class="{ select : category==='weightMange'}" class="link" :to="{name: 'main',params:{category:'weightMange',currentView:'weightMange'}}">
+            <img src="/weightMangeButton.png" alt="WeightMange" /><br>체중관리
         </RouterLink>
-        <RouterLink class="link">
+        <RouterLink :class="{ select : category==='dietMange'}" class="link" :to="{name: 'main', params: {category:'dietMange',currentView:'dietPlan'}}">
             <img src="/dietMangeButton.png" alt="DietMange" /><br>식단관리
         </RouterLink>
-        <RouterLink class="link">
+        <RouterLink :class="{ select : category==='productRecommend'}" class="link" :to="{name: 'main' , params: {category:'productRecommend',currentView:'sup'}}">
             <img src="/productRecommendButton.png" alt="ProductRecommend" /><br>제품추천
         </RouterLink>
-        <RouterLink class="link">
+        <RouterLink :class="{ select : category==='post'}"class="link" :to="{name: 'main' , params: {category:'post',currentView:'post'}}">
             <img src="/PostButton.png" alt="Post" /><br>게시판
         </RouterLink>
-        
-
     </div>
 </template>
 
 <script setup>
+
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+
+  const route = useRoute()
+  const category = ref(route.params.category)
+  const currentView = ref(route.params.currentView)
+
+  watch(()=>route.params.category,(newcategory)=>{
+    category.value = newcategory
+  })
+  watch(()=>route.params.currentView,(newcurrentView)=>{
+    currentView.value = newcurrentView
+  })
+
 
 </script>
 
@@ -43,12 +56,12 @@
     .sleeping{
         margin-bottom: 75px;
     }
-    .body{
+    /* .body{
         background-color: black;
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+    } */
 
     .link{
         text-decoration: none;
@@ -66,6 +79,9 @@
     .link:hover{
         background-color: #b1def0;
         transition: 0.4s;
+    }
+    .select{
+        background-color: #b1def0;
     }
 
 </style>

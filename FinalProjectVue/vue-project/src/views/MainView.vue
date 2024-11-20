@@ -3,33 +3,26 @@
     <div class="main-left">
       <MainLeftView/>
     </div>
+
     <div class="main-right">
+
       <div class="main-header">
-        <RouterLink>1번목록</RouterLink>
-        <RouterLink>2번목록</RouterLink>
-        <RouterLink>3번목록</RouterLink>
+        <MainHeaderView/>
       </div>
+
       <div class="main-body">
-        <div>메인화면</div>
+          <MainBodyView/>
       </div>
+
     </div>
   </div>
   
 </template>
 
-<script>
+<script setup>
+import MainBodyView from '@/components/main/MainBodyView.vue';
+import MainHeaderView from '@/components/main/MainHeaderView.vue';
 import MainLeftView from '@/components/main/MainLeftView.vue';
-export default {
-  name: 'MainView',
-  components: {
-    MainLeftView
-  },
-};
-
-
-
-
-
 </script>
 
 <style scoped>
@@ -43,28 +36,29 @@ export default {
   width: 160px;
   height: 980px;
   border-radius: 25px;
-  background-color: #98d3e9; /* 배경 색상 (필요에 따라 변경) */
-  display: flex;
+  background-color: #98d3e9; 
+   display: flex;
   flex-direction: column; /*자식 요소를 세로로 정렬*/
   align-items: center; /* 자식 요소 수평 중앙 정렬 */
   justify-content: flex-start; /* 자식 요소 위쪽 정렬 */
   padding: 10px; /* 내부 여백 */
 }
 .main-right {
-  display: flex;
-  flex-direction: column; /* 세로 정렬 */
-  flex: 1; /* 남은 공간 사용 */
+  /* display: flex; */
+  flex-direction: column; 
+  flex: 1;
 }
 .main-header{
-  margin-top: 90px;
+  margin-top: 65px;
   margin-left: 20px;
   width: 90%;
   height: 90px;
-  background-color: rgb(144, 189, 241);
+  /* background-color: rgb(144, 189, 241); */
 }
 .main-body{
-  background-color: #90cfe6;
-  margin: 30px;
+  /* background-color: #90cfe6; */
+  margin-top:10px;
+  margin-left: 30px;
   width: 90%;
 }
 </style>

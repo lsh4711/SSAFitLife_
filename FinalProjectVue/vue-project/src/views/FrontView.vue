@@ -6,13 +6,13 @@
         <h1 class="title">체중관리</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">체중 관리</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main' ,params: {category:'weightMange',currentView:'weightMange'}}" class="link">체중 관리</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">체조성 기록</RouterLink> <a class="arrow">></a>  
+            <RouterLink :to="{name: 'main', params: {category:'weightMange',currentView:'bodyRecord'}}" class="link">체조성 기록</RouterLink> <a class="arrow">></a>  
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">활동관리</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main', params: {category:'weightMange',currentView:'activityMange'}}" class="link">활동관리</RouterLink> <a class="arrow">></a>
           </div>
         </div>
       </div>
@@ -20,13 +20,13 @@
         <h1 class="title">식단 관리</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">식단 짜기</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main', params: {category:'dietMange',currentView:'dietPlan'}}" class="link">식단 짜기</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">밀프렙 도우미</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main', params: {category:'dietMange',currentView:'millprepAssist'}}" class="link">밀프렙 도우미</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">보충제 활용</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main', params: {category:'dietMange',currentView:'supUse'}}" class="link">보충제 활용</RouterLink> <a class="arrow">></a>
           </div>
         </div>
       </div>
@@ -34,10 +34,10 @@
         <h1 class="title">제품추천</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">보충제</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main' , params: {category:'productRecommend',currentView:'sup'}}" class="link">보충제</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">닭가슴살</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main' , params: {category:'productRecommend',currentView:'chickenBreast'}}" class="link">닭가슴살</RouterLink> <a class="arrow">></a>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
         <h1 class="title">게시판</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main'}" class="link">게시판</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main' , params: {category:'post',currentView:'post'}}" class="link">게시판</RouterLink> <a class="arrow">></a>
           </div>
         </div>
       </div>
@@ -131,6 +131,7 @@
     cursor: pointer;
     transition: 0.2s;
   }
+  
   .category1 {
     /* margin-left: 20px; */
     background-color: #e5f2fb;
@@ -151,6 +152,7 @@
     border-radius: 30px;
     position: relative;
   }
+
   .container{
     position: relative;
   /* background-color: #05202b; */
