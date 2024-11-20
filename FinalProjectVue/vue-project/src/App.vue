@@ -12,13 +12,16 @@
         <div v-if="isLoginVisible" class="login-side-panel">
           <button class="login-close-button" @click="loginSidePanel">닫기</button>
           <h2>로그인 화면</h2>
-          <form @submit.prevent="handleLogin">
+          <form @submit.prevent="login">
             <div class="input-group">
               <input v-model="username" type="text" placeholder="이메일" required><br>
               <span v-if="username && !username.includes('@')" class="error-message">올바른 이메일을 입력하세요.</span>
             </div>
             <div class="input-group">
               <input v-model="password" type="password" placeholder="비밀번호" required><br>
+            </div>
+            <div>
+              <span v-if="checkLoginFlag" class="error-message">아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.</span>
             </div>
             <br>
             <button type="submit">로그인</button>
@@ -33,25 +36,31 @@
           <h2>회원가입 화면</h2>
           <form @submit.prevent="handleSignup">
             <div class="input-group">
+              <h3 class="join_title">이메일</h3>
               <input v-model="user.email" type="email" placeholder="이메일" @blur="checkEmail" required><br>
               <span v-if="emailError" class="error-message">{{ emailError }}</span>
             </div>
             <div class="input-group">
+              <h3 class="join_title">비밀번호</h3>
               <input v-model="user.password" type="password" placeholder="비밀번호" required @input="checkPasswordMatch"><br>
               <input v-model="confirmPassword" type="password" placeholder="비밀번호 확인" required @input="checkPasswordMatch"><br>
               <span v-if="passwordError" class="error-message">{{ passwordError }}</span>
             </div>
             <div class="input-group">
+              <h3 class="join_title">이름</h3>
               <input v-model="user.name" type="text" placeholder="이름" required><br>
             </div>
             <div class="input-group">
+              <h3 class="join_title">닉네임</h3>
               <input v-model="user.nickname" type="text" placeholder="닉네임" @blur="checkNickname" required><br>
               <span v-if="nicknameError" class="error-message">{{ nicknameError }}</span>
             </div>
             <div class="input-group">
+              <h3 class="join_title">키(cm)</h3>
               <input v-model="user.height" type="number" step="0.1" placeholder="키(cm)" required><br>
             </div>
             <div class="input-group">
+              <h3 class="join_title">성별</h3>
               <select v-model="user.gender" required>
                 <option value="" selected disabled>성별</option>
                 <option value="0">남성</option>
@@ -59,9 +68,44 @@
               </select><br>
             </div>
             <div class="input-group">
-              <input v-model="user.birthday" type="date" placeholder="생일" required><br>
+              <h3 class="join_title">생년월일</h3>
+              <div class="bir_wrap">
+                <div class="bir_yy">
+                  <span class="ps_box">
+                    <select id="yyyy" class="sel" v-model="signup.yyyy">
+                      <option value="" disabled>년</option>
+                      <option v-for="(item, index) in yyyyList" :key="index" :value="item.value">
+                        {{ item.text }}
+                      </option>
+                    </select>
+                  </span>
+                </div>
+                <div class="bir_mm">
+                  <span class="ps_box">
+                    <select id="mm" class="sel" v-model="signup.mm">
+                      <option value="" disabled>월</option>
+                      <option v-for="(item, index) in mmlist" :key="index" :value="item.value">
+                        {{ item.text }}
+                      </option>
+                    </select>
+                  </span>
+                </div>
+                <div class="bir_dd">
+                  <span class="ps_box">
+                    <input v-model="signup.dd"
+                           @input="validateDay"
+                           placeholder="일"
+                           type="text"
+                           class="int"
+                           maxlength="2"
+                           oninput="javascript: this.value = this.value.replace(/[^0-9]/g, '');"/>
+                  </span>
+                </div>
+              </div>
+              <span class="error_next_box" v-if="checkFlag && (!signup.yyyy || !signup.mm || !signup.dd)" >생년월일을 입력하세요</span>
             </div>
             <div class="input-group">
+              <h3 class="join_title">전화번호</h3>
               <input v-model="user.phoneNumber" type="text" placeholder="전화번호" @input="formatPhoneNumber" required><br>
             </div>
             <br>
@@ -74,7 +118,7 @@
         <div v-if="isMypageVisible" class="mypage-side-panel">
           <button class="mypage-close-button" @click="mypageSidePanel">닫기</button>
           <h2>마이페이지 화면</h2>
-          <button @click="logoutFunc">로그아웃</button>
+          <button @click="logout">로그아웃</button>
           <p>여기에 원하는 내용을 추가하세요.</p>
         </div>
       </transition>
@@ -83,62 +127,22 @@
 
 <script setup>
   // Vue Composition API 사용
-import { ref, onMounted  } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { useAuth } from '@/composables/useAuth';
+  import axios from "axios";
+
+const { isLoggedIn, handleLogin, handleLogout, checkToken } = useAuth();
 
 const instance = axios.create({
   baseURL: 'http://localhost:8080', // Spring API 기본 URL
   withCredentials: true, // 쿠키 전송 허용
 });
 
-// 토큰 만료 여부 확인 함수
-function isTokenExpired(token) {
-      if (!token) return true;
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const currentTime = Math.floor(Date.now() / 1000);
-      return payload.exp < currentTime;
-    }
-
-    // 쿠키에서 토큰 가져오기
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-      return null;
-    }
-
-    // 토큰 만료 여부와 로그인 상태 확인
-    onMounted(() => {
-      const accessToken = getCookie('access');
-
-      if (accessToken && !isTokenExpired(accessToken)) {
-        // 토큰이 유효하면 마이페이지를 표시
-        isLoggedIn.value = true;
-      } else {
-        // 토큰이 없거나 만료되었으면 서버에서 재발급 요청
-        refreshAccessToken();
-      }
-    });
-
-    // 토큰 재발급 요청
-    async function refreshAccessToken() {
-      try {
-        const response = await instance.post('/reissue');
-        const newAccessToken = response.headers['access'];
-
-        // 새 토큰을 쿠키에 저장
-        document.cookie = `access=${newAccessToken}; path=/`;
-
-        // 새 토큰으로 마이페이지 표시
-        isLoggedIn.value = true;
-      } catch (err) {
-        console.log('토큰 갱신 실패:', err);
-        alert('로그인이 필요합니다.');
-        isLoggedIn.value = false;
-        isLoginVisible.value = true;
-      }
-    }
+// 토큰 만료 여부와 로그인 상태 확인
+onMounted(() => {
+  checkToken();
+});
 
 // 로그인, 회원가입, 마이페이지 상태 변수
 const isLoginVisible = ref(false);
@@ -178,29 +182,21 @@ const mypageSidePanel = () => {
 };
 
 //로그인 처리
-const isLoggedIn = ref(false);
 const username = ref('');
 const password = ref('');
+const checkLoginFlag = ref(false);
 
-const handleLogin = async () => {
-  try {
-    const response = await instance.post('/login', {
-      username:username.value, 
-      password:password.value
-    })
+const login = async () => {
+  const loginFail = await handleLogin(username.value, password.value);
+  isLoginVisible.value = loginFail;
+  checkLoginFlag.value = loginFail;
+};
 
-    // 헤더에서 Access Token 가져오기
-    const accessToken = response.headers['access'];
-    document.cookie = `access=${accessToken}; path=/`; // 쿠키 저장
-
-    isLoginVisible.value = false;
-    isLoggedIn.value = true;
-    alert('로그인 성공');
-  }catch(err) {
-    console.log(err);
-    alert('로그인 실패');
-  }
-}
+// 로그아웃 처리
+const logout = () => {
+  handleLogout();
+  isMypageVisible.value = false;
+};
 
 //회원가입 처리
 const user = ref({
@@ -292,26 +288,54 @@ const formatPhoneNumber = (event) => {
 
   // 사용자 입력 데이터 반영
   user.value.phoneNumber = event.target.value;
-};
+  };
 
-const logoutFunc = async () => {
-  const refreshToken = getCookie('refresh'); // 쿠키에서 토큰 가져오기
-  try {
-    const response = await instance.post('/logout', {}, {
-      headers: {
-        'refresh': `${refreshToken}` // 토큰을 헤더에 추가
-      }
-    });
-    // 로그아웃 성공 후 메인 페이지로 리다이렉트
-    window.location.href = '/';  // 메인 페이지로 이동
-  } catch (err) {
-    console.log('로그아웃 실패:', err);
-    alert('로그아웃 실패');
-  }
-}
+//생일 처리
+  const signup = ref({
+    yyyy: '',
+    mm: '',
+    dd: '',
+  });
+
+  const yyyyList = ref([]);
+  const mmlist = ref([]);
+  const checkFlag = ref(false); // 생년월일 체크 플래그
+
+  // 생년월일 관련 데이터 초기화
+  onMounted(() => {
+    const nowYear = new Date().getFullYear();
+
+    for (let i = 0; i < 100; i++) {
+      let date = nowYear - i;
+      yyyyList.value.push({ value: date, text: date });
+    }
+
+    for (let i = 1; i <= 12; i++) {
+      mmlist.value.push({
+        value: i,
+        text: i,
+      });
+    }
+  });
+
+  const validateDay = () => {
+    // signup.dd가 undefined일 경우 빈 문자열로 설정
+    let day = signup.value.dd || '';
+    // 숫자만 남기기
+    day = day.replace(/[^0-9]/g, '');
+    // 숫자 값이 31을 초과하지 않도록 처리
+    if (parseInt(day) > 31) {
+      signup.value.dd = '31'; // 최대값을 31로 제한
+    }
+  };
 
 const handleSignup = async () => {
   try {
+    if (!signup.yyyy || !signup.mm || !signup.dd) {
+      checkFlag.value = true; // 생년월일이 제대로 입력되지 않으면 오류 표시
+      return;
+    }
+
     const response = await instance.post('/user/join', user.value);
 
     if (response.status === 200) {
@@ -325,11 +349,9 @@ const handleSignup = async () => {
     alert('회원가입 실패');
   }
 };
-
 </script>
 
 <style scoped>
-  
 /* 오른쪽 패널 스타일 */
 .login-side-panel {
   position: fixed;
@@ -540,4 +562,38 @@ const handleSignup = async () => {
   .slide-leave-to {
     transform: translateX(100%);
   }
+
+/* 생일 입력 관련 스타일 */
+.bir_wrap {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bir_yy, .bir_mm, .bir_dd {
+  flex: 1;
+}
+
+.ps_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sel {
+  width: 80%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.int {
+  width: 80%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.error_next_box {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
 </style>
