@@ -2,11 +2,10 @@ package com.ssafy.ssafitlife.security.model.dao;
 
 import com.ssafy.ssafitlife.security.model.dto.RefreshToken;
 
-import java.util.Date;
-
 public interface RefreshTokenDao {
     Boolean existsByRefresh(String refresh);
-    void deleteByRefresh(String refresh);
+    void deleteRefreshTokenByMemNo(int memNo);
+    void deleteRefreshTokenByRefresh(String refresh);
     void insertToken(RefreshToken refreshToken);
-    Integer findMemberNoByRefresh(String refresh);
+    Integer selectMemberNoByRefresh(String refresh);
 }
