@@ -1,10 +1,12 @@
 package com.ssafy.ssafitlife.security.jwt;
 
 import com.ssafy.ssafitlife.security.model.dto.CustomUserDetails;
+import com.ssafy.ssafitlife.security.model.service.ReissueService;
 import com.ssafy.ssafitlife.user.model.dto.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,62 +15,130 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final ReissueService reissueService;
 
-    public JWTFilter(JWTUtil jwtUtil) {
+    public JWTFilter(JWTUtil jwtUtil, ReissueService reissueService) {
         this.jwtUtil = jwtUtil;
+        this.reissueService = reissueService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //헤더에서 access키에 담긴 토큰을 꺼냄
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        // 헤더에서 Access 토큰 추출
         String accessToken = request.getHeader("access");
 
-        //토큰이 없다면 다음 필터로 넘김
-        if (accessToken == null) {
+        // 토큰이 없으면 다음 필터로 진행
+        if (accessToken == null || accessToken.isBlank()) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        //토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
         try {
+            // 토큰 만료 여부 확인
             jwtUtil.isExpired(accessToken);
+
+            // 토큰 타입 확인
+            String category = jwtUtil.getCategory(accessToken);
+            if (!"access".equals(category)) {
+                sendErrorResponse(response, "Invalid access token", HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            // 사용자 정보와 권한 획득
+            String userEmail = jwtUtil.getUsername(accessToken);
+            String role = jwtUtil.getRole(accessToken);
+
+            // User 객체 생성 및 CustomUserDetails 설정
+            User user = new User();
+            user.setEmail(userEmail);
+            user.setRole(role);
+            CustomUserDetails customUserDetails = new CustomUserDetails(user);
+
+            // Authentication 객체 생성 및 SecurityContext 설정
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    customUserDetails,
+                    null,
+                    customUserDetails.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
         } catch (ExpiredJwtException e) {
-            //response body
-            PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
+            // Access 토큰 만료 시 Refresh 토큰을 이용해 재발급 요청
+            String refreshToken = getRefreshTokenFromRequest(request);
+            if (refreshToken != null) {
+                // 재발급 처리
+                reissueService.reissueTokens(request, response);
 
-            //response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                // 새로 발급된 Access 토큰을 헤더에 추가
+                String newAccessToken = response.getHeader("access");
+
+                // 새로 발급된 Access 토큰으로 인증
+                try {
+                    jwtUtil.isExpired(newAccessToken);  // 새 토큰의 유효성 검사
+                    String category = jwtUtil.getCategory(newAccessToken);
+                    if ("access".equals(category)) {
+                        String userEmail = jwtUtil.getUsername(newAccessToken);
+                        String role = jwtUtil.getRole(newAccessToken);
+                        User user = new User();
+                        user.setEmail(userEmail);
+                        user.setRole(role);
+                        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+                        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                                customUserDetails,
+                                null,
+                                customUserDetails.getAuthorities()
+                        );
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                } catch (ExpiredJwtException ex) {
+                    sendErrorResponse(response, "Failed to renew token", HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
+
+                // 원래 요청한 URI로 리다이렉트
+                String redirectUrl = (String) request.getAttribute("originalUrl");
+                if (redirectUrl != null) {
+                    response.sendRedirect(redirectUrl); // 재발급 후 원래 URL로 리다이렉트
+                    return;
+                }
+            } else {
+                sendErrorResponse(response, "Refresh token missing", HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+        } catch (Exception e) {
+            sendErrorResponse(response, "Invalid token", HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
-
-        //토큰이 access인지 확인 (발급시 페이로드에 명시)
-        String category = jwtUtil.getCategory(accessToken);
-
-        if (!category.equals("access")) {
-            //response body
-            PrintWriter writer = response.getWriter();
-            writer.print("invalid access token");
-
-            //response status code
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        // username, role 값을 획득
-        String userEmail = jwtUtil.getUsername(accessToken);
-        String role = jwtUtil.getRole(accessToken);
-
-        User user = new User();
-        user.setEmail(userEmail);
-        user.setRole(role);
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
         filterChain.doFilter(request, response);
+    }
+
+
+    private String getRefreshTokenFromRequest(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refresh")) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 에러 응답을 JSON 형태로 반환
+     */
+    private void sendErrorResponse(HttpServletResponse response, String message, int status) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"" + message + "\"}");
+        response.getWriter().flush();
+        response.getWriter().close();
     }
 }
