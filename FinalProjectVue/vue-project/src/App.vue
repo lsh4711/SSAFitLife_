@@ -11,7 +11,7 @@
       <!-- <button @click="loginSidePanel" class="login"><a class="login-content">로그인</a><a class="plus">+</a></button> -->
       <!-- <button @click="signupSidePanel" class="signup"><a class="signup-content">회원가입</a><a class="plus">+</a></button> -->
       <button @click="mypageSidePanel" class="mypage"><a class="mypage-content">마이페이지</a><a class="plus">+</a></button>
-      
+      <!-- git test -->
       <transition name="slide">
         <!-- 로그인 패널 -->
         <div v-if="isLoginVisible" class="login-side-panel">

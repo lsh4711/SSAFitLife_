@@ -29,7 +29,7 @@ const routes = [
         name:'mainLeft',
         component: MainLeftView,
       },
-      {
+      { 
         path:'/main-header',
         name:'mainHeader',
         component: MainHeaderView,
