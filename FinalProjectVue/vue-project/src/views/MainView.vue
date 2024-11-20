@@ -56,7 +56,7 @@ import MainLeftView from '@/components/main/MainLeftView.vue';
   /* background-color: rgb(144, 189, 241); */
 }
 .main-body{
-  background-color: #90cfe6;
+  /* background-color: #90cfe6; */
   margin-top:10px;
   margin-left: 30px;
   width: 90%;

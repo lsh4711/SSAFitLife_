@@ -25,52 +25,52 @@ const routes = [
     component: MainView,
     children: [
       {
-        path:'/main-left',
+        path:'main-left',
         name:'mainLeft',
         component: MainLeftView,
       },
       { 
-        path:'/main-header',
+        path:'main-header',
         name:'mainHeader',
         component: MainHeaderView,
       },
       {
-        path:'/main-body',
+        path:'main-body',
         name:'mainBody',
         component: MainBodyView,
         children:[
           {
-            path:'/weight',
+            path:'weight',
             name:'weight',
             component: WeightView,
           },
           {
-            path:'/diet',
+            path:'diet',
             name:'diet',
             component: DietView,
           },
           {
-            path:'/product',
+            path:'product',
             name:'product',
             component: ProductView,
           },
           {
-            path:'/post',
+            path:'post',
             name:'postView',
             component: PostView,
             children:[
               {
-                path:'/post-list',
+                path:'post-list',
                 name:'postList',
                 component: PostListView,
               },
               {
-                path:'/post-detail',
+                path:'post-detail',
                 name:'postDetail',
                 component: PostDetailView,
               },
               {
-                path:'/post-list',
+                path:'post-list',
                 name:'postList',
                 component: PostRegistView,
               }
