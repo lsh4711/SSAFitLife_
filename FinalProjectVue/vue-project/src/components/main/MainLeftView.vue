@@ -56,12 +56,12 @@ import { useRoute } from 'vue-router';
     .sleeping{
         margin-bottom: 75px;
     }
-    .body{
+    /* .body{
         background-color: black;
         display: flex;
         justify-content: center;
         align-items: center;
-    }
+    } */
 
     .link{
         text-decoration: none;
