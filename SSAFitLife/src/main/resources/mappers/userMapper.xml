@@ -27,6 +27,12 @@
         WHERE email = #{email}
     </select>
 
+    <select id="existsByNickname" resultType="boolean" parameterType="String">
+        SELECT COUNT(*) > 0
+        FROM User
+        WHERE nickname = #{nickname}
+    </select>
+
     <select id="selectByEmail" resultType="User" parameterType="String">
         SELECT
             mem_no,

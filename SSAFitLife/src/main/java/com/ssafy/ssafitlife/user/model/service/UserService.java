@@ -9,6 +9,8 @@ public interface UserService {
     public List<User> getUserList();
     //Email 중복 체크
     Boolean existsByEmail(String email);
+    //닉네임 중복 체크
+    Boolean existsByNickname(String nickname);
     //Email로 검색
     User findByEmail(String email);
     //등록

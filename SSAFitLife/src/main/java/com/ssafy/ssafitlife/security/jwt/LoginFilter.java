@@ -1,7 +1,9 @@
 package com.ssafy.ssafitlife.security.jwt;
 
-import com.ssafy.ssafitlife.security.model.dao.RefreshTokenDao;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.ssafitlife.security.model.dto.RefreshToken;
+import com.ssafy.ssafitlife.security.model.service.RefreshTokenService;
 import com.ssafy.ssafitlife.user.model.dao.UserDao;
 import com.ssafy.ssafitlife.user.model.dto.User;
 import jakarta.servlet.FilterChain;
@@ -20,26 +22,42 @@ import java.util.Collection;
 import java.util.Date;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
-//    git test
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
-    private final RefreshTokenDao refreshTokenDao;
+    private final RefreshTokenService refreshTokenService;
     private final UserDao userDao;
 
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshTokenDao refreshTokenDao, UserDao userDao) {
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshTokenService refreshTokenService, UserDao userDao) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.refreshTokenDao = refreshTokenDao;
+        this.refreshTokenService = refreshTokenService;
         this.userDao = userDao;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String username = obtainUsername(request);
-        String password = obtainPassword(request);
+        String username = null;
+        String password = null;
 
+        try {
+            // JSON 데이터를 파싱
+            StringBuilder json = new StringBuilder();
+            String line;
+            while ((line = request.getReader().readLine()) != null) {
+                json.append(line);
+            }
+
+            // JSON 객체 파싱 (Jackson 또는 Gson을 사용)
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(json.toString());
+            username = jsonNode.get("username").asText();
+            password = jsonNode.get("password").asText();
+        } catch (Exception e) {
+            throw new AuthenticationException("Invalid JSON format") {};
+        }
+
+        // 인증 토큰 생성
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
-
         return authenticationManager.authenticate(authToken);
     }
 
@@ -75,7 +93,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         rf.setExpiration(new Date(System.currentTimeMillis() + 86400000L));
         rf.setMemNo(user.getMemNo());
 
-        refreshTokenDao.insertToken(rf);
+        refreshTokenService.saveToken(rf);
     }
 
     private Cookie createCookie(String key, String value) {
