@@ -2,35 +2,29 @@
     <div class="list" >
         <div class="header">
             <span class="header-title"> 제목 </span>
-            <span class="header-line">|</span>
             <span class="header-content"> 내용 </span>
-            <span class="header-line">|</span>
             <span class="header-writer"> 작성자 </span>
-            <span class="header-line">|</span> 
             <span class="header-create"> 작성일 </span>
-            <span class="header-line">|</span>
             <span class="header-update"> 수정일 </span>
-            <span class="header-line">|</span>
-            <span class="header-views"> 조회수 </span> 
+            <span class="header-views"> 조회수 </span>
         </div>
 
         <div>
 
-            <RouterLink class="post-detail">
-                <div class="post" v-for="list in lists" :key="list.memNo" @click="postDetail(list.memNo)">
-                    <span class="post-title">{{ list.postTitle }}</span>
-                    <span class="post-line">|</span>
-                    <span class="post-content">{{ list.postContent }}</span>
-                    <span class="post-line">|</span>
-                    <span class="post-writer">{{ list.memNo }}</span>
-                    <span class="post-line">|</span>
-                    <span class="post-create">{{ list.postCreatedDate }}</span>
-                    <span class="post-line">|</span>
-                    <span class="post-update">{{ list.postUpdatedDate }}</span>
-                    <span class="post-line">|</span>
-                    <span class="post-views">{{ list.postViews }}</span>
-                </div>
-            </RouterLink>
+            <div v-for="list in lists" :key="list.postNo">
+                <RouterLink :to="{ name: 'postDetail' , params:{postNo: list.postNo}}" custom>
+                    <template #default="{ navigate }">
+                        <div class="post" @click="navigate">
+                            <span class="post-title">{{ list.postTitle }}</span>
+                            <span class="post-content">{{ list.postContent }}</span>
+                            <span class="post-writer">{{ list.memNo }}</span>
+                            <span class="post-create">{{ list.postCreatedDate }}</span>
+                            <span class="post-update">{{ list.postUpdatedDate }}</span>
+                            <span class="post-views">{{ list.postViews }}</span>
+                        </div>
+                    </template>
+                </RouterLink>
+            </div>
         </div>
     </div>
 </template>
@@ -46,13 +40,10 @@
     const lists = ref([]);
 
     const requestPostList = async()=>{
-        const { data } =await axios.get("http://192.168.210.62:8080/api-post/post");
+        const { data } =await axios.get("http://localhost:8080/api-post/post");
         lists.value = data;
     }
-    const postDetail = async(postNo)=>{
-        const { data } =await axios.get(`http://192.168.210.62:8080/api-post/post/${postNo}`);
-        lists.value = data;
-    }
+
 
 
     requestPostList();
@@ -76,6 +67,10 @@
         justify-content: center;
         align-items: center;
     }
+    .post-detail{
+        text-decoration: none;
+        color: black;
+    }
     /* .header-title, .post-title,
     .header-content, .post-content,
     .header-writer, .post-writer,
@@ -86,8 +81,6 @@
         justify-content: center;
         align-items: center;
     } */
-
-
 .header-title, .post-title {
     flex: 2;
 }
@@ -108,7 +101,7 @@
 }
 .header {
     font-weight: bold;
-    border-bottom: 2px solid #ddd; /* 구분선 추가 */
+    /* border-bottom: 2px solid #ddd; */
     padding: 10px 0;
     background-color: #b1def0;
     border-radius: 10px;

@@ -18,21 +18,21 @@ public class UserController {
     }
 
     // 사용자 목록 반환
-    @GetMapping("/user")
-    public List<User> getUsers() {
-        return userService.getUserList();
-    }
+//    @GetMapping("/user")
+//    public List<User> getUsers() {
+//        return userService.getUserList();
+//    }
 
     // 이메일 중복 체크
     @GetMapping("/check-email")
-    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+    public ResponseEntity<Boolean> checkEmail(@RequestParam(value = "email") String email) {
         boolean exists = userService.existsByEmail(email);
         return ResponseEntity.ok(exists);
     }
 
     // 닉네임 중복 체크
     @GetMapping("/check-nickname")
-    public ResponseEntity<Boolean> checkNickname(@RequestParam String nickname) {
+    public ResponseEntity<Boolean> checkNickname(@RequestParam(value = "nickname") String nickname) {
         boolean exists = userService.existsByNickname(nickname);
         return ResponseEntity.ok(exists);
     }

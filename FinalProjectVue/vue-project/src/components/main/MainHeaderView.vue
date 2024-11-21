@@ -17,7 +17,6 @@
         <div class="post" v-if="category === 'post'">
             <RouterLink class="link" :class="{ select : currentView==='post'}"  :to="{name: 'main' , params: {category:'post',currentView:'post'}}" >게시판</RouterLink>         
         </div>
-
     </div>
 </template>
 

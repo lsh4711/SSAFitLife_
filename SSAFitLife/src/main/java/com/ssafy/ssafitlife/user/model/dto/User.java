@@ -10,17 +10,17 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    private int memNo;
-    private String email;
-    private String password;
-    private String name;
-    private float height;
-    private int gender;
-    private Date birthday;
-    private String phoneNumber;
-    private String nickname;
-    private String role;
-    private Date lastActDate;
-    private boolean isActive;
-    private Date joinDate;
+	private int memNo;
+	private String email;
+	private String password;
+	private String name;
+	private float height;
+	private int gender;
+	private Date birthday;
+	private String phoneNumber;
+	private String nickname;
+	private String role;
+	private Date lastActDate;
+	private boolean isActive;
+	private Date joinDate;
 }

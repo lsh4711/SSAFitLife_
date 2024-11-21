@@ -56,7 +56,7 @@ const routes = [
           },
           {
             path:'post',
-            name:'postView',
+            name:'post',
             component: PostView,
             children:[
               {
@@ -65,13 +65,13 @@ const routes = [
                 component: PostListView,
               },
               {
-                path:'post-detail',
+                path:'post-detail/:postNo',
                 name:'postDetail',
                 component: PostDetailView,
               },
               {
-                path:'post-list',
-                name:'postList',
+                path:'post-regist',
+                name:'postRegist',
                 component: PostRegistView,
               }
             ]

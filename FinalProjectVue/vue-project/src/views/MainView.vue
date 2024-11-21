@@ -49,7 +49,7 @@ import MainLeftView from '@/components/main/MainLeftView.vue';
   flex: 1;
 }
 .main-header{
-  margin-top: 65px;
+  margin-top: 100px;
   margin-left: 20px;
   width: 90%;
   height: 90px;
