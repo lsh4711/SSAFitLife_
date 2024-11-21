@@ -1,4 +1,4 @@
-package com.ssafy.ssafitlife.security.service;
+package com.ssafy.ssafitlife.security.model.service;
 
 import com.ssafy.ssafitlife.security.jwt.JWTUtil;
 import com.ssafy.ssafitlife.security.model.dto.RefreshToken;
