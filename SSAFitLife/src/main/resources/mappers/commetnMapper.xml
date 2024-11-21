@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ssafitlife.post.model.dao.CommentDao">
+
+	<!-- 전체 댓글 조회 -->
+	<select id="selectAll" resultType="Comment">
+		SELECT comment_no, comment_content, comment_created_date, comment_parent_no, mem_no, post_no
+		from comment
+	</select>
+	
+	<!-- N번 게시글 M번 댓글 대댓글 조회 -->
+	<select id="selectAllPNCN" resultType="Comment" parameterType="int">
+		SELECT comment_no, comment_content, comment_created_date,comment_parent_no, mem_no, post_no
+		FROM comment
+		WHERE post_no = #{postNo} AND comment_parent_no = #{commentParentNo}
+	</select>
+	
+	<!-- N번 게시글 댓글 조회 -->
+	<select id="selectAllPN" resultType="Comment" parameterType="int">
+		SELECT comment_no, comment_content, comment_created_date, comment_parent_no, mem_no, post_no
+		FROM comment
+		WHERE post_no = #{postNo}
+	</select>
+	
+	
+	<!-- 상세 댓글 조회 -->
+<!-- <select id="selectOne" resultMap="boardMap" parameterType="int">
+		SELECT * FROM board
+		WHERE id = #{id};
+	</select> -->
+	<!-- 상세 댓글 조회 -->
+	<!-- <select id="selectOne" resultType="Board" parameterType="int">
+		SELECT post_no, post_title, post_content, post_created_date, post_updated_date, post_views , mem_no 
+		FROM board
+		WHERE postNo = #{postNo};
+	</select> -->
+	
+	<!-- 댓글 등록 -->
+	<insert id="insertComment" parameterType="Comment" keyProperty="commentNo" useGeneratedKeys="true">
+		INSERT INTO comment (comment_content,comment_parent_no,mem_no,post_no)
+		VALUES (#{commentContent},#{commentParentNo},#{memNo},#{postNo});
+	</insert>
+	
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteComment" parameterType="int">
+		DELETE FROM comment
+		WHERE comment_no = #{commentNo};
+	</delete>
+	
+	<!-- 조회수 증가 -->
+	<!-- <update id="updateViewCnt" parameterType="int">
+		UPDATE board
+		SET post_views = post_views + 1
+		WHERE postNo = #{postNo};
+	</update> -->
+	
+	<!-- 댓글 수정 -->
+	<update id="updateComment" parameterType="Comment">
+		UPDATE comment
+		SET comment_content = #{commentContent}
+		WHERE comment_no = #{commentNo};
+	</update>
+	
+	<!-- 검색기능 -->
+	<!-- <select id="search" resultType="Board" parameterType="SearchCondition">
+		SELECT * FROM board
+		검색 조건
+		<if test="key != null">
+			WHERE ${key} LIKE concat('%',#{word},'%')
+		</if>
+		정렬 조건
+		<if test="orderBy != null">
+			ORDER BY ${orderBy} ${orderByDir}
+		</if>
+	</select> -->
+	
+	<!-- <insert id="insertFile" parameterType="Comment">
+		INSERT INTO files (file_id, file_name, comment_no)
+		VALUES (#{fileId}, #{fileName}, #{commentNo});
+	</insert> -->
+	
+	
+	
+	
+</mapper>

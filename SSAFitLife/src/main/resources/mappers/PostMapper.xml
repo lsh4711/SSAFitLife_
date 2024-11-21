@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.ssafitlife.post.model.dao.PostDao">
+
+	<!-- 전체 게시글 조회 -->
+	<select id="selectAll" resultType="Post">
+		SELECT post_no, post_title, post_content, post_created_date, post_updated_date, post_views , mem_no
+		FROM post
+	</select>
+
+
+	<!-- 상세 게시글 조회 -->
+<!-- <select id="selectOne" resultMap="postMap" parameterType="int">
+		SELECT * FROM post
+		WHERE id = #{id};
+	</select> -->
+	<!-- 상세 게시글 조회 -->
+	<select id="selectOne" resultType="Post" parameterType="int">
+		SELECT post_no, post_title, post_content, post_created_date, post_updated_date, post_views , mem_no 
+		 FROM post
+		WHERE post_no = #{postNo};
+	</select>
+	
+	<!-- 게시글 등록 -->
+	<insert id="insertPost" parameterType="Post" keyProperty="postNo" useGeneratedKeys="true">
+		INSERT INTO post (post_title,post_content,mem_no)
+		VALUES (#{postTitle}, #{postContent}, #{memNo});
+	</insert>
+
+	<!-- 게시글에 등록된 댓글 삭제 -->	
+	<delete id="deleteComment">
+		DELETE FROM comment
+		 WHERE post_no = #{postNo};
+	</delete>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="deletePost" parameterType="int">
+		DELETE FROM post
+		 WHERE post_no = #{postNo};
+	</delete>
+	
+	
+	<!-- 조회수 증가 -->
+	<update id="updateViews" parameterType="int">
+		UPDATE post
+		SET post_views = post_views + 1
+		WHERE post_no = #{postNo};
+	</update>
+	
+	<!-- 업데이트 수정날짜를 저장하겠다는 예시 -->
+	<update id="updatePost" parameterType="Post">
+		UPDATE post
+		SET post_title = #{postTitle}, post_content = #{postContent}, post_updated_date = now()
+		WHERE post_no = #{postNo};
+	</update>
+	
+	<!-- 검색기능 -->
+	<select id="search" resultType="Post" parameterType="SearchCondition">
+		SELECT * FROM post
+		<!-- 검색 조건 -->
+		<if test="key != null">
+			WHERE ${key} LIKE concat('%',#{word},'%')
+		</if>
+		<!-- 정렬 조건 -->
+		<if test="orderBy != null">
+			ORDER BY ${orderBy} ${orderByDir}
+		</if>
+	</select>
+	
+	<insert id="insertFile" parameterType="Post">
+		INSERT INTO files (file_id, file_name, post_id)
+		VALUES (#{fileId}, #{fileName}, #{id});
+	</insert>
+	
+	
+	
+	
+</mapper>

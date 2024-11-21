@@ -45,7 +45,7 @@
         <h1 class="title">게시판</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main' , params: {category:'post',currentView:'post'}}" class="link">게시판</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'postList' , params: {category:'post',currentView:'post'}}" class="link">게시판</RouterLink> <a class="arrow">></a>
           </div>
         </div>
       </div>

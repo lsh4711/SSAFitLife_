@@ -6,21 +6,25 @@
             <span class="header-writer"> 작성자 </span>
             <span class="header-create"> 작성일 </span>
             <span class="header-update"> 수정일 </span>
-            <span class="header-views"> 조회수 </span> 
+            <span class="header-views"> 조회수 </span>
         </div>
 
         <div>
 
-            <RouterLink class="post-detail">
-                <div class="post" v-for="list in lists" :key="list.memNo" @click="postDetail(list.memNo)">
-                    <span class="post-title">{{ list.postTitle }}</span>
-                    <span class="post-content">{{ list.postContent }}</span>
-                    <span class="post-writer">{{ list.memNo }}</span>
-                    <span class="post-create">{{ list.postCreatedDate }}</span>
-                    <span class="post-update">{{ list.postUpdatedDate }}</span>
-                    <span class="post-views">{{ list.postViews }}</span>
-                </div>
-            </RouterLink>
+            <div v-for="list in lists" :key="list.postNo">
+                <RouterLink :to="{ name: 'postDetail' , params:{postNo: list.postNo}}" custom>
+                    <template #default="{ navigate }">
+                        <div class="post" @click="navigate">
+                            <span class="post-title">{{ list.postTitle }}</span>
+                            <span class="post-content">{{ list.postContent }}</span>
+                            <span class="post-writer">{{ list.memNo }}</span>
+                            <span class="post-create">{{ list.postCreatedDate }}</span>
+                            <span class="post-update">{{ list.postUpdatedDate }}</span>
+                            <span class="post-views">{{ list.postViews }}</span>
+                        </div>
+                    </template>
+                </RouterLink>
+            </div>
         </div>
     </div>
 </template>
@@ -39,10 +43,7 @@
         const { data } =await axios.get("http://localhost:8080/api-post/post");
         lists.value = data;
     }
-    const postDetail = async(postNo)=>{
-        const { data } =await axios.get(`http://localhost:8080/api-post/post/${postNo}`);
-        lists.value = data;
-    }
+
 
 
     requestPostList();
