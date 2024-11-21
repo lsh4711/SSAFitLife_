@@ -19,12 +19,22 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public void removeRefreshToken(String refreshToken) {
-        refreshTokenDao.deleteByRefresh(refreshToken);
+    public void removeRefreshTokenByMemNo(int memNo) {
+        refreshTokenDao.deleteRefreshTokenByMemNo(memNo);
+    }
+
+    @Override
+    public void removeRefreshTokenByRefresh(String refresh) {
+        refreshTokenDao.deleteRefreshTokenByRefresh(refresh);
     }
 
     @Override
     public void saveToken(RefreshToken refreshToken) {
         refreshTokenDao.insertToken(refreshToken);
+    }
+
+    @Override
+    public Integer findMemberNoByRefresh(String refreshToken) {
+        return refreshTokenDao.selectMemberNoByRefresh(refreshToken);
     }
 }

@@ -28,7 +28,7 @@ public class CustomUserDetails implements UserDetails {
         return user.getPassword();
     }
 
-    // 사용자 이름 (보통 이메일)을 반환
+    // 사용자 이메일 (보통 이메일)을 반환
     @Override
     public String getUsername() {
         return user.getEmail();

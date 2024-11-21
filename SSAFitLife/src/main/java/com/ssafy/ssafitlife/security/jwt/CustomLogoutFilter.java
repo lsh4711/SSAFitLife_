@@ -1,6 +1,6 @@
 package com.ssafy.ssafitlife.security.jwt;
 
-import com.ssafy.ssafitlife.security.model.dao.RefreshTokenDao;
+import com.ssafy.ssafitlife.security.model.service.RefreshTokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,11 +16,11 @@ import java.io.IOException;
 public class CustomLogoutFilter extends GenericFilterBean {
 
     private final JWTUtil jwtUtil;
-    private final RefreshTokenDao refreshTokenDao;
+    private final RefreshTokenService refreshTokenService;
 
-    public CustomLogoutFilter(JWTUtil jwtUtil, RefreshTokenDao refreshTokenDao) {
+    public CustomLogoutFilter(JWTUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.jwtUtil = jwtUtil;
-        this.refreshTokenDao = refreshTokenDao;
+        this.refreshTokenService = refreshTokenService;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         //DB에 저장되어 있는지 확인
-        Boolean isExist = refreshTokenDao.existsByRefresh(refresh);
+        Boolean isExist = refreshTokenService.isRefreshTokenExists(refresh);
         if(!isExist) {
             //response status code
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -83,14 +83,20 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
         //로그아웃 진행
         //Refresh 토큰 DB에서 제거
-        refreshTokenDao.deleteByRefresh(refresh);
+        refreshTokenService.removeRefreshTokenByMemNo(refreshTokenService.findMemberNoByRefresh(refresh));
 
         //Refresh 토큰 Cookie 값 0
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
+        Cookie refreshCookie = new Cookie("refresh", null);
+        refreshCookie.setMaxAge(0);
+        refreshCookie.setPath("/");
 
-        response.addCookie(cookie);
+        //액세스 토큰 쿠키도 삭제
+        Cookie accessCookie = new Cookie("access", null);
+        accessCookie.setMaxAge(0); // 액세스 토큰 쿠키 만료 처리
+        accessCookie.setPath("/");
+
+        response.addCookie(refreshCookie);
+        response.addCookie(accessCookie);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }
