@@ -12,6 +12,8 @@ import PostView from '@/components/mainBody/PostView.vue';
 import PostListView from '@/components/mainBody/post/PostList.vue';
 import PostDetailView from '@/components/mainBody/post/PostDetail.vue';
 import PostRegistView from '@/components/mainBody/post/PostRegist.vue';
+import {useAuth} from "@/composables/useAuth.js";
+import {onMounted} from "vue";
 
 const routes = [
   {
@@ -80,8 +82,6 @@ const routes = [
       }
     ]
   }
-
-
 ];
 
 const router = createRouter({
@@ -89,30 +89,21 @@ const router = createRouter({
   routes
 });
 
-// // 글로벌 navigation guard 설정
-// router.beforeEach((to, from, next) => {
-//   const token = localStorage.getItem('accessToken');
-//   console.log(token)
+// 라우터 가드에서 checkToken 실행
+// const { isLoggedIn, checkToken } = useAuth();
+// router.beforeEach(async (to, from, next) => {
+//   // 메인 페이지 이후의 경로인지 확인
+//   if (to.path.startsWith('/main')) {
+//     await checkToken(); // `main` 경로 이후부터 실행
 //
-//   if (token) {
-//     if (isTokenExpired(token)) {
-//       localStorage.removeItem('accessToken');
-//       next('/'); // 토큰 만료시 로그인 페이지로 이동
-//     } else {
-//       next(); // 유효한 토큰이 있으면 요청한 페이지로 이동
-//     }
-//   } else {
-//     if (to.path !== '/') {
-//       next('/'); // 토큰이 없으면 로그인 페이지로 이동
+//     // 로그인 필요 여부에 따라 라우트 제어
+//     // if (to.meta.requiresAuth && !isLoggedIn.value) {
+//     if (!isLoggedIn.value) {
+//       alert('로그인이 필요합니다.');
+//       return next({ name: 'front' }); // 로그인 페이지로 리다이렉트
 //     }
 //   }
+//   next(); // 라우트 진행
 // });
-//
-// function isTokenExpired(token) {
-//   const payload = JSON.parse(atob(token.split('.')[1]));
-//   const currentTime = Math.floor(Date.now() / 1000);
-//   return payload.exp < currentTime;
-// }
-
 
 export default router;

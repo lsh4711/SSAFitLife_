@@ -134,7 +134,6 @@
 import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import {useAuth} from '@/composables/useAuth';
-import axios from "axios";
 import axiosInstance from "@/plugins/axios.js";
 
 const {isLoggedIn, handleLogin, handleLogout, checkToken} = useAuth();

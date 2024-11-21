@@ -76,6 +76,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         //DB에 저장되어 있는지 확인
         Boolean isExist = refreshTokenService.isRefreshTokenExists(refresh);
         if(!isExist) {
+            System.out.println("## doLogOut !isExist ##");
             //response status code
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
