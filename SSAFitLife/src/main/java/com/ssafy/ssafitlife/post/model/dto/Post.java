@@ -19,10 +19,5 @@ public class Post {
 	private String PostCreatedDate; // 작성일
 	private String PostUpdatedDate; // 수정일
 	private int postViews; // 조회수
-	
 	private Integer memNo; // 작성자번호
-	
-	private User user;
-	
-	private List<Comment> commmentList;
 }

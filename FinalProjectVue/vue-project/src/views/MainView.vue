@@ -23,6 +23,8 @@
 import MainBodyView from '@/components/main/MainBodyView.vue';
 import MainHeaderView from '@/components/main/MainHeaderView.vue';
 import MainLeftView from '@/components/main/MainLeftView.vue';
+
+
 </script>
 
 <style scoped>

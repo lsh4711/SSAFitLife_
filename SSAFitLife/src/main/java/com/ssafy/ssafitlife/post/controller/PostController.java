@@ -1,16 +1,16 @@
 package com.ssafy.ssafitlife.post.controller;
 
+import java.util.List;
+
+
 import com.ssafy.ssafitlife.post.model.dto.Post;
 import com.ssafy.ssafitlife.post.model.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController // @Controller + @ResponseBody
 @RequestMapping("/api-post")
-@CrossOrigin(origins = "http://localhost:5173")
 public class PostController {
 	// 서비스 의존성 주입
 	private final PostService postService;
@@ -23,20 +23,16 @@ public class PostController {
 	
 	@GetMapping("/post")
 	public ResponseEntity<Object> list() {
-		
-		try {
-			List<Post> list = postService.getPostList();
-			if (!list.isEmpty())
-				return ResponseEntity.status(HttpStatus.OK).body(list);
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).body("조회할 게시글이 없습니다.");
-			
-		} catch (Exception e) {
-			e.getStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류로 인해 게시글 불러오기에 실패했습니다.");
-		
-		}
+	    try {
+	        List<Post> list = postService.getPostList();
+	        if (!list.isEmpty())
+	            return ResponseEntity.status(HttpStatus.OK).body(list);
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("조회할 게시글이 없습니다.");
+	    } catch (Exception e) {
+	        e.printStackTrace();  // 에러 발생 시 스택 트레이스를 출력
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류로 인해 게시글 불러오기에 실패했습니다.");
+	    }
 	}
-
 	// 검색
 //	@GetMapping("/post")
 //	public ResponseEntity<?> list(@ModelAttribute SearchCondition condition){

@@ -56,7 +56,7 @@ const routes = [
           },
           {
             path:'post',
-            name:'postView',
+            name:'post',
             component: PostView,
             children:[
               {
@@ -65,13 +65,13 @@ const routes = [
                 component: PostListView,
               },
               {
-                path:'post-detail',
+                path:'post-detail/:postNo',
                 name:'postDetail',
                 component: PostDetailView,
               },
               {
-                path:'post-list',
-                name:'postList',
+                path:'post-regist',
+                name:'postRegist',
                 component: PostRegistView,
               }
             ]
@@ -88,5 +88,31 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 });
+
+// // 글로벌 navigation guard 설정
+// router.beforeEach((to, from, next) => {
+//   const token = localStorage.getItem('accessToken');
+//   console.log(token)
+//
+//   if (token) {
+//     if (isTokenExpired(token)) {
+//       localStorage.removeItem('accessToken');
+//       next('/'); // 토큰 만료시 로그인 페이지로 이동
+//     } else {
+//       next(); // 유효한 토큰이 있으면 요청한 페이지로 이동
+//     }
+//   } else {
+//     if (to.path !== '/') {
+//       next('/'); // 토큰이 없으면 로그인 페이지로 이동
+//     }
+//   }
+// });
+//
+// function isTokenExpired(token) {
+//   const payload = JSON.parse(atob(token.split('.')[1]));
+//   const currentTime = Math.floor(Date.now() / 1000);
+//   return payload.exp < currentTime;
+// }
+
 
 export default router;

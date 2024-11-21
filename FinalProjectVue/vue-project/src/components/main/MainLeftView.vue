@@ -15,7 +15,7 @@
         <RouterLink :class="{ select : category==='productRecommend'}" class="link" :to="{name: 'main' , params: {category:'productRecommend',currentView:'sup'}}">
             <img src="/productRecommendButton.png" alt="ProductRecommend" /><br>제품추천
         </RouterLink>
-        <RouterLink :class="{ select : category==='post'}"class="link" :to="{name: 'main' , params: {category:'post',currentView:'post'}}">
+        <RouterLink :class="{ select : category==='post'}"class="link" :to="{name: 'postList' , params: {category:'post',currentView:'post'}}">
             <img src="/PostButton.png" alt="Post" /><br>게시판
         </RouterLink>
     </div>

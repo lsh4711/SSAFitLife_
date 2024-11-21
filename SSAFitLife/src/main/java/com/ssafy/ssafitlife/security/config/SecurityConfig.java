@@ -56,7 +56,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of("http://localhost:*")); // 와일드카드 포트 사용
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("access", "Content-Type")); // 응답 헤더로 "access"를 노출
+        configuration.setExposedHeaders(List.of("Authorization", "Content-Type")); // Authorization 헤더 노출
         configuration.setAllowCredentials(true); // 쿠키 허용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -80,7 +80,7 @@ public class SecurityConfig {
 
 
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/", "/user", "/user/**", "/reissue").permitAll()
+                .requestMatchers("/login", "/", "/user", "/user/**", "/reissue", "/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated());
 

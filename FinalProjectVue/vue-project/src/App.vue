@@ -135,13 +135,9 @@ import {ref, onMounted} from 'vue';
 import {useRouter} from 'vue-router';
 import {useAuth} from '@/composables/useAuth';
 import axios from "axios";
+import axiosInstance from "@/plugins/axios.js";
 
 const {isLoggedIn, handleLogin, handleLogout, checkToken} = useAuth();
-
-const instance = axios.create({
-  baseURL: 'http://localhost:8080', // Spring API 기본 URL
-  withCredentials: true, // 쿠키 전송 허용
-});
 
 // 토큰 만료 여부와 로그인 상태 확인
 onMounted(() => {
@@ -230,7 +226,7 @@ const isPasswordDiff = ref(false);
 // 이메일 중복 체크
 const checkEmail = async () => {
   try {
-    const response = await instance.get(`/user/check-email`, {
+    const response = await axiosInstance.get(`/user/check-email`, {
       params: {email: user.value.email},
     });
 
@@ -250,7 +246,7 @@ const checkEmail = async () => {
 // 닉네임 중복 체크
 const checkNickname = async () => {
   try {
-    const response = await instance.get(`/user/check-nickname`, {
+    const response = await axiosInstance.get(`/user/check-nickname`, {
       params: {nickname: user.value.nickname},
     });
 
@@ -355,7 +351,7 @@ const handleSignup = async () => {
 
     user.value.birthday = signup.value.yyyy + "-" + signup.value.mm + "-" + signup.value.dd;
 
-    const response = await instance.post('/user/join', user.value);
+    const response = await axiosInstance.post('/user/join', user.value);
 
     if (response.status === 200) {
       alert('회원가입 성공');

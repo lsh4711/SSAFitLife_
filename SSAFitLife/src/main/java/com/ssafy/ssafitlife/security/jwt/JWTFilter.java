@@ -30,7 +30,10 @@ public class JWTFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         // 헤더에서 Access 토큰 추출
-        String accessToken = request.getHeader("access");
+        String accessToken = request.getHeader("Authorization");
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7); // "Bearer " 부분을 제거하여 토큰만 추출
+        }
 
         // 토큰이 없으면 다음 필터로 진행
         if (accessToken == null || accessToken.isBlank()) {
@@ -50,21 +53,12 @@ public class JWTFilter extends OncePerRequestFilter {
             }
 
             // 사용자 정보와 권한 획득
-            String userEmail = jwtUtil.getUsername(accessToken);
+            String userEmail = jwtUtil.getEmail(accessToken);
             String role = jwtUtil.getRole(accessToken);
+            Integer memNo = jwtUtil.getMemNo(accessToken);
 
             // User 객체 생성 및 CustomUserDetails 설정
-            User user = new User();
-            user.setEmail(userEmail);
-            user.setRole(role);
-            CustomUserDetails customUserDetails = new CustomUserDetails(user);
-
-            // Authentication 객체 생성 및 SecurityContext 설정
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    customUserDetails,
-                    null,
-                    customUserDetails.getAuthorities()
-            );
+            Authentication authentication = getAuthentication(userEmail, role, memNo);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (ExpiredJwtException e) {
@@ -75,24 +69,20 @@ public class JWTFilter extends OncePerRequestFilter {
                 reissueService.reissueTokens(request, response);
 
                 // 새로 발급된 Access 토큰을 헤더에 추가
-                String newAccessToken = response.getHeader("access");
+                String newAccessToken = response.getHeader("Authorization");
+                if (newAccessToken != null && newAccessToken.startsWith("Bearer ")) {
+                    newAccessToken = newAccessToken.substring(7); // "Bearer " 부분을 제거하여 토큰만 추출
+                }
 
                 // 새로 발급된 Access 토큰으로 인증
                 try {
                     jwtUtil.isExpired(newAccessToken);  // 새 토큰의 유효성 검사
                     String category = jwtUtil.getCategory(newAccessToken);
                     if ("access".equals(category)) {
-                        String userEmail = jwtUtil.getUsername(newAccessToken);
+                        String userEmail = jwtUtil.getEmail(newAccessToken);
                         String role = jwtUtil.getRole(newAccessToken);
-                        User user = new User();
-                        user.setEmail(userEmail);
-                        user.setRole(role);
-                        CustomUserDetails customUserDetails = new CustomUserDetails(user);
-                        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                                customUserDetails,
-                                null,
-                                customUserDetails.getAuthorities()
-                        );
+                        Integer memNo = jwtUtil.getMemNo(newAccessToken);
+                        Authentication authentication = getAuthentication(userEmail, role, memNo);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                 } catch (ExpiredJwtException ex) {
@@ -116,6 +106,20 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private static Authentication getAuthentication(String userEmail, String role, Integer memNo) {
+        User user = new User();
+        user.setEmail(userEmail);
+        user.setRole(role);
+        user.setMemNo(memNo);
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                customUserDetails,
+                null,
+                customUserDetails.getAuthorities()
+        );
+        return authentication;
     }
 
 

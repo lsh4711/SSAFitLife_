@@ -1,4 +1,4 @@
-package com.ssafy.ssafitlife.security.service;
+package com.ssafy.ssafitlife.security.model.service;
 
 import com.ssafy.ssafitlife.security.jwt.JWTUtil;
 import com.ssafy.ssafitlife.security.model.dto.RefreshToken;
@@ -60,19 +60,20 @@ public class ReissueServiceImpl implements ReissueService {
             return new ResponseEntity<>("refresh token not found", HttpStatus.BAD_REQUEST);
         }
 
-        String username = jwtUtil.getUsername(refresh);
+        String username = jwtUtil.getEmail(refresh);
         String role = jwtUtil.getRole(refresh);
+//        Integer memNo = jwtUtil.getMemNo(refresh);
 
         // make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+        String newAccess = jwtUtil.createJwt("access", username, role, memNo, 600000L);
+        String newRefresh = jwtUtil.createJwt("refresh", username, role, memNo, 86400000L);
 
         // Refresh 토큰 저장 (기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장)
         refreshTokenService.removeRefreshTokenByRefresh(refresh);
         addRefreshEntity(memNo, newRefresh, 86400000L);
 
         // response
-        response.setHeader("access", newAccess);
+        response.setHeader("Authorization", "Bearer " + newAccess);
         response.addCookie(createCookie("refresh", newRefresh));
 
         return new ResponseEntity<>(HttpStatus.OK);

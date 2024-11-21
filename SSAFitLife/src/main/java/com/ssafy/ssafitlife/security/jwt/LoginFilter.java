@@ -53,11 +53,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             username = jsonNode.get("username").asText();
             password = jsonNode.get("password").asText();
         } catch (Exception e) {
-            throw new AuthenticationException("Invalid JSON format") {};
+            throw new AuthenticationException("Invalid JSON format") {
+            };
         }
 
         // 인증 토큰 생성
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+
         return authenticationManager.authenticate(authToken);
     }
 
@@ -67,12 +69,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String role = authorities.stream().findFirst().orElseThrow().getAuthority();
 
-        String accessToken = jwtUtil.createJwt("access", username, role, 600000L); // 10분
-        String refreshToken = jwtUtil.createJwt("refresh", username, role, 86400000L); // 1일
+        User user = userDao.selectByEmail(username);
+
+        int memNo = user.getMemNo();
+
+        String accessToken = jwtUtil.createJwt("access", username, role, memNo, 600000L); // 10분
+        String refreshToken = jwtUtil.createJwt("refresh", username, role, memNo, 86400000L); // 1일
 
         saveRefreshToken(username, refreshToken);
 
-        response.setHeader("access", accessToken);
+        response.setHeader("Authorization", "Bearer " + accessToken);
         response.addCookie(createCookie("refresh", refreshToken));
         response.setStatus(HttpStatus.OK.value());
     }

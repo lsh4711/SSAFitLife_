@@ -1,11 +1,6 @@
 <template>
     <div class="post">
-        
-          <div>
-            <PostList v-if="true"/>
-          </div>
-          <PostDetail v-if="false"/>
-          <PostRegist v-if="false"/>
+          <RouterView/>
     </div>
 </template>
 

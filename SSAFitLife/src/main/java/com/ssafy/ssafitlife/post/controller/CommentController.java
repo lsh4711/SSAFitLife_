@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api-comment")
-@CrossOrigin(origins = "http://localhost:5173")
 public class CommentController {
 	// 서비스 의존성 주입
 	private final CommentService commentService;
