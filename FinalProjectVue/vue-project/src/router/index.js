@@ -12,6 +12,7 @@ import PostView from '@/components/mainBody/PostView.vue';
 import PostListView from '@/components/mainBody/post/PostList.vue';
 import PostDetailView from '@/components/mainBody/post/PostDetail.vue';
 import PostRegistView from '@/components/mainBody/post/PostRegist.vue';
+import PostUpdateView from '@/components/mainBody/post/postUpdate.vue';
 
 const routes = [
   {
@@ -73,6 +74,11 @@ const routes = [
                 path:'post-regist',
                 name:'postRegist',
                 component: PostRegistView,
+              },
+              {
+                path:'post-update/:postNo',
+                name:'postUpdate',
+                component: PostUpdateView,
               }
             ]
           }
