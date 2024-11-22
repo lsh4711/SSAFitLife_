@@ -76,7 +76,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
         //DB에 저장되어 있는지 확인
         Boolean isExist = refreshTokenService.isRefreshTokenExists(refresh);
         if(!isExist) {
-            System.out.println("## doLogOut !isExist ##");
             //response status code
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
@@ -91,13 +90,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         refreshCookie.setMaxAge(0);
         refreshCookie.setPath("/");
 
-        //액세스 토큰 쿠키도 삭제
-        Cookie accessCookie = new Cookie("access", null);
-        accessCookie.setMaxAge(0); // 액세스 토큰 쿠키 만료 처리
-        accessCookie.setPath("/");
-
         response.addCookie(refreshCookie);
-        response.addCookie(accessCookie);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

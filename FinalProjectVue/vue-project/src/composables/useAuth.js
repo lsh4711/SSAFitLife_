@@ -1,7 +1,5 @@
 import { ref } from 'vue';
-import { useCookies } from 'vue3-cookies';
 import axios from "axios";
-// import axiosInstance from '@/plugins/axios';  // axios.js에서 인스턴스 가져오기
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:8080', // Spring API 기본 URL
@@ -89,7 +87,7 @@ export function useAuth() {
 
     // 로그아웃 처리
     const handleLogout = async () => {
-        document.cookie = 'refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Strict';
+        // document.cookie = 'refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Strict';
         try {
             const response = await axiosInstance.post('/logout', {}, {});
             // 로그아웃 후 상태 초기화

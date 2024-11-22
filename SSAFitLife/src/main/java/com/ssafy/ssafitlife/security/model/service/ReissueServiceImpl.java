@@ -71,8 +71,9 @@ public class ReissueServiceImpl implements ReissueService {
         System.out.println("memNo = " + memNo);
 
         // make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, role, memNo, 600L);
+        String newAccess = jwtUtil.createJwt("access", username, role, memNo, 600000L);
 //        String newRefresh = jwtUtil.createJwt("refresh", username, role, memNo, 86400000L);
+//        response.setHeader("Set-Cookie", "refresh=" + newRefresh + "; Path=/; HttpOnly; Secure; SameSite=None");
 //        // Refresh 토큰 저장 (기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장)
 //        refreshTokenService.removeRefreshTokenByRefresh(refresh);
 //        addRefreshEntity(memNo, newRefresh, 86400000L);
