@@ -1,18 +1,18 @@
 <template>
     <div class="header">
-        <div class="weight-mange" v-if="category === 'weightMange'">
-            <RouterLink  class="link" :class="{ select : currentView==='weightMange'}" :to="{name: 'main' ,params: {category:'weightMange',currentView:'weightMange'}}">체중관리</RouterLink>         
-            <RouterLink class="link" :class="{ select : currentView==='bodyRecord'}" :to="{name: 'main', params: {category:'weightMange',currentView:'bodyRecord'}}" >체조성 기록</RouterLink>         
-            <RouterLink class="link" :class="{ select : currentView==='activityMange'}"  :to="{name: 'main', params: {category:'weightMange',currentView:'activityMange'}}" >활동 관리</RouterLink>         
+        <div class="weight-manage" v-if="category === 'weightManage'">
+            <RouterLink  class="link" :class="{ select : currentView==='weightManage'}" :to="{name: 'weightManage' ,params: {category:'weightManage',currentView:'weightManage'}}">체중관리</RouterLink>         
+            <RouterLink class="link" :class="{ select : currentView==='bodyRecord'}" :to="{name: 'main', params: {category:'weightManage',currentView:'bodyRecord'}}" >체조성 기록</RouterLink>         
+            <RouterLink class="link" :class="{ select : currentView==='activityManage'}"  :to="{name: 'activityManage', params: {category:'weightManage',currentView:'activityManage'}}" >활동 관리</RouterLink>         
         </div>
-        <div class="diet-mange" v-if="category === 'dietMange'">
-            <RouterLink class="link" :class="{ select : currentView==='dietPlan'}"  :to="{name: 'main', params: {category:'dietMange',currentView:'dietPlan'}}" >식단 짜기</RouterLink>         
-            <RouterLink class="link" :class="{ select : currentView==='millprepAssist'}" :to="{name: 'main', params: {category:'dietMange',currentView:'millprepAssist'}}" >밀프렙 도우미</RouterLink>         
-            <RouterLink class="link" :class="{ select : currentView==='supUse'}" :to="{name: 'main', params: {category:'dietMange',currentView:'supUse'}}" >보충제 활용</RouterLink>         
+        <div class="diet-manage" v-if="category === 'dietManage'">
+            <RouterLink class="link" :class="{ select : currentView==='dietPlan'}"  :to="{name: 'dietPlan', params: {category:'dietManage',currentView:'dietPlan'}}" >식단 짜기</RouterLink>         
+            <RouterLink class="link" :class="{ select : currentView==='millprepAssist'}" :to="{name: 'main', params: {category:'dietManage',currentView:'millprepAssist'}}" >밀프렙 도우미</RouterLink>         
+            <RouterLink class="link" :class="{ select : currentView==='supUse'}" :to="{name: 'main', params: {category:'dietManage',currentView:'supUse'}}" >보충제 활용</RouterLink>         
         </div>
         <div class="product-recommend" v-if="category === 'productRecommend'">
-            <RouterLink class="link" :class="{ select : currentView==='sup'}" :to="{name: 'main' , params: {category:'productRecommend',currentView:'sup'}}" >보충제</RouterLink>         
-            <RouterLink class="link" :class="{ select : currentView==='chickenBreast'}"  :to="{name: 'main' , params: {category:'productRecommend',currentView:'chickenBreast'}}" >닭가슴살</RouterLink>         
+            <RouterLink class="link" :class="{ select : currentView==='sup'}" :to="{name: 'sup' , params: {category:'productRecommend',currentView:'sup'}}" >보충제</RouterLink>         
+            <RouterLink class="link" :class="{ select : currentView==='chickenBreast'}"  :to="{name: 'chickenBreast' , params: {category:'productRecommend',currentView:'chickenBreast'}}" >닭가슴살</RouterLink>         
         </div>
         <div class="post" v-if="category === 'post'">
             <RouterLink class="link" :class="{ select : currentView==='post'}"  :to="{name: 'main' , params: {category:'post',currentView:'post'}}" >게시판</RouterLink>         
@@ -46,7 +46,7 @@ import { useRoute } from 'vue-router';
         width: 100%;
         /* background-color: bisque; */
     }
-    .weight-mange,.diet-mange,.product-recommend,.post {
+    .weight-manage,.diet-manage,.product-recommend,.post {
     display: flex;
     gap: 13vw;
     }

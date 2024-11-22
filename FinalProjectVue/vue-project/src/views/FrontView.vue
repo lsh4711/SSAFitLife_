@@ -6,13 +6,13 @@
         <h1 class="title">체중관리</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main' ,params: {category:'weightMange',currentView:'weightMange'}}" class="link">체중 관리</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'weightManage' ,params: {category:'weightManage',currentView:'weightManage'}}" class="link">체중 관리</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main', params: {category:'weightMange',currentView:'bodyRecord'}}" class="link">체조성 기록</RouterLink> <a class="arrow">></a>  
+            <RouterLink :to="{name: 'main', params: {category:'weightManage',currentView:'bodyRecord'}}" class="link">체조성 기록</RouterLink> <a class="arrow">></a>  
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main', params: {category:'weightMange',currentView:'activityMange'}}" class="link">활동관리</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{ name: 'activityManage', params: { category: 'weightManage', currentView: 'activityManage' }}" class="link">활동관리</RouterLink> <a class="arrow">></a>
           </div>
         </div>
       </div>
@@ -20,13 +20,13 @@
         <h1 class="title">식단 관리</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main', params: {category:'dietMange',currentView:'dietPlan'}}" class="link">식단 짜기</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'dietPlan', params: {category:'dietManage',currentView:'dietPlan'}}" class="link">식단 짜기</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main', params: {category:'dietMange',currentView:'millprepAssist'}}" class="link">밀프렙 도우미</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main', params: {category:'dietManage',currentView:'millprepAssist'}}" class="link">밀프렙 도우미</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main', params: {category:'dietMange',currentView:'supUse'}}" class="link">보충제 활용</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main', params: {category:'dietManage',currentView:'supUse'}}" class="link">보충제 활용</RouterLink> <a class="arrow">></a>
           </div>
         </div>
       </div>
@@ -34,10 +34,10 @@
         <h1 class="title">제품추천</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main' , params: {category:'productRecommend',currentView:'sup'}}" class="link">보충제</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'sup' , params: {category:'productRecommend',currentView:'sup'}}" class="link">보충제</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main' , params: {category:'productRecommend',currentView:'chickenBreast'}}" class="link">닭가슴살</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'chickenBreast' , params: {category:'productRecommend',currentView:'chickenBreast'}}" class="link">닭가슴살</RouterLink> <a class="arrow">></a>
           </div>
         </div>
       </div>

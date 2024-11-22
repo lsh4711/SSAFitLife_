@@ -1,6 +1,6 @@
 <template>
     <div>
-        체중관리 뷰
+        <RouterView/>
     </div>
 </template>
 

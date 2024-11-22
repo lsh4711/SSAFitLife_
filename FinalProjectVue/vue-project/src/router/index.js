@@ -12,7 +12,12 @@ import PostView from '@/components/mainBody/PostView.vue';
 import PostListView from '@/components/mainBody/post/PostList.vue';
 import PostDetailView from '@/components/mainBody/post/PostDetail.vue';
 import PostRegistView from '@/components/mainBody/post/PostRegist.vue';
-import PostUpdateView from '@/components/mainBody/post/postUpdate.vue';
+import PostUpdateView from '@/components/mainBody/post/PostUpdate.vue';
+import WeightManageView from '@/components/mainBody/weight/weightManage.vue';
+import ActivityManageView from '@/components/mainBody/weight/activityManage.vue';
+import DietPlanView from '@/components/mainBody/diet/dietPlan.vue';
+import SupView from '@/components/mainBody/product/sup.vue';
+import ChickenBreastView from '@/components/mainBody/product/chickenBreast.vue';
 
 const routes = [
   {
@@ -44,16 +49,47 @@ const routes = [
             path:'weight',
             name:'weight',
             component: WeightView,
+            children:[
+              {
+                path:'weight-manage',
+                name:'weightManage',
+                component: WeightManageView,
+              },
+              {
+                path:'activity-manage',
+                name:'activityManage',
+                component: ActivityManageView,
+              }
+            ]
           },
           {
             path:'diet',
             name:'diet',
             component: DietView,
+            children:[
+              {
+                path:'diet-plan',
+                name:'dietPlan',
+                component: DietPlanView,
+              },
+            ]
           },
           {
             path:'product',
             name:'product',
             component: ProductView,
+            children:[
+              {
+                path:'sup',
+                name:'sup',
+                component: SupView,
+              },
+              {
+                path:'chicken-breast',
+                name:'chickenBreast',
+                component: ChickenBreastView,
+              }
+            ]
           },
           {
             path:'post',
@@ -79,7 +115,7 @@ const routes = [
                 path:'post-update/:postNo',
                 name:'postUpdate',
                 component: PostUpdateView,
-              }
+              },
             ]
           }
         ]
