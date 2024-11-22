@@ -10,7 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController // @Controller + @ResponseBody
-@RequestMapping("/api-post")
+@RequestMapping("/post")
+
 public class PostController {
 	// 서비스 의존성 주입
 	private final PostService postService;
@@ -20,9 +21,10 @@ public class PostController {
 	}
 
 	// 게시글 전체조회
-	
+
 	@GetMapping("/post")
 	public ResponseEntity<Object> list() {
+		System.out.println("게시글 전체보기");
 	    try {
 	        List<Post> list = postService.getPostList();
 	        if (!list.isEmpty())
@@ -49,7 +51,7 @@ public class PostController {
 	// 게시글 상세보기
 	@GetMapping("/post/{postNo}")
 	public ResponseEntity<Object> detail(@PathVariable("postNo") int postNo) {
-		
+		System.out.println("게시글상세보기");
 		try {
 			Post post = postService.readPost(postNo);
 			if (post != null)

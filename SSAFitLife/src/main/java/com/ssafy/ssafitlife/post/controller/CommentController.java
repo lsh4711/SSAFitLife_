@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api-comment")
+@RequestMapping("/comment")
 public class CommentController {
 	// 서비스 의존성 주입
 	private final CommentService commentService;
@@ -80,12 +80,20 @@ public class CommentController {
 
 	// 댓글 등록
 	@PostMapping("/comment/{memNo}/{postNo}/{commentParentNo}")
-	public ResponseEntity<String> write(@PathVariable("memNo") int memNo , @PathVariable("postNo") int postNo, @PathVariable("commentParentNo") int commentParentNo , @RequestBody Comment comment) {
+	public ResponseEntity<String> write(@PathVariable("memNo") int memNo , @PathVariable("postNo") int postNo, @PathVariable( required = false ) Integer commentParentNo , @RequestBody Comment comment) {
+		System.out.println(commentParentNo);
+		System.out.println(commentParentNo);
+		System.out.println(commentParentNo);
+		System.out.println(commentParentNo);
+		System.out.println(commentParentNo);
+		System.out.println(commentParentNo);
+		System.out.println(commentParentNo);
+		System.out.println(commentParentNo);
+		System.out.println(commentParentNo);
 		
 		comment.setMemNo(memNo);
 		comment.setPostNo(postNo);
 		comment.setCommentParentNo(commentParentNo);
-		
 		if (commentService.writeComment(comment))
 			return ResponseEntity.status(HttpStatus.CREATED).body("댓글이 등록되었습니다.");
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 등록에 실패했습니다.");
