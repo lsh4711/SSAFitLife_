@@ -23,6 +23,8 @@
 import MainBodyView from '@/components/main/MainBodyView.vue';
 import MainHeaderView from '@/components/main/MainHeaderView.vue';
 import MainLeftView from '@/components/main/MainLeftView.vue';
+
+
 </script>
 
 <style scoped>
@@ -49,7 +51,7 @@ import MainLeftView from '@/components/main/MainLeftView.vue';
   flex: 1;
 }
 .main-header{
-  margin-top: 100px;
+  margin-top: 65px;
   margin-left: 20px;
   width: 90%;
   height: 90px;

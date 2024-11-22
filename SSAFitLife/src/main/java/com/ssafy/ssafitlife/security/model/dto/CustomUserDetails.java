@@ -62,4 +62,8 @@ public class CustomUserDetails implements UserDetails {
     public User getUser() {
         return user;
     }
+
+    public int getMemNo() {
+        return user.getMemNo();
+    }
 }

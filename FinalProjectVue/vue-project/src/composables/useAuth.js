@@ -1,82 +1,110 @@
 import { ref } from 'vue';
-import axios from 'axios';
+import { useCookies } from 'vue3-cookies';
+import axios from "axios";
+// import axiosInstance from '@/plugins/axios';  // axios.js에서 인스턴스 가져오기
 
-const instance = axios.create({
+const axiosInstance = axios.create({
     baseURL: 'http://localhost:8080', // Spring API 기본 URL
     withCredentials: true, // 쿠키 전송 허용
 });
 
+let isReissueInProgress = false;
+
 export function useAuth() {
     const isLoggedIn = ref(false);
-    const accessToken = ref(null);
 
     // 토큰 만료 여부 확인 함수
     function isTokenExpired(token) {
-        if (!token) return true;
+        if (!token) {
+            return true;
+        }
         const payload = JSON.parse(atob(token.split('.')[1]));
         const currentTime = Math.floor(Date.now() / 1000);
         return payload.exp < currentTime;
     }
 
-    // 쿠키에서 토큰 가져오기
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    }
+    // 새로운 액세스 토큰을 재발급 받는 함수
+    const handleReissueToken = async () => {
+        if (isReissueInProgress) return; // 이미 요청 중인 경우 중복 요청 방지
+        isReissueInProgress = true;
+
+        try {
+            const response = await axiosInstance.post('/reissue', {}, {});
+            return response.headers['authorization'];
+        } catch (error) {
+            console.error("Token reissue failed:", error);
+        } finally {
+            isReissueInProgress = false; // 요청이 끝난 후 상태 초기화
+        }
+    };
 
     // 토큰 만료 여부와 로그인 상태 확인
-    function checkToken() {
-        const token = getCookie('access');
-        if (token && !isTokenExpired(token)) {
-            isLoggedIn.value = true;
-            accessToken.value = token;
-        } else {
+    const checkToken = async () => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
             isLoggedIn.value = false;
+            return;
         }
-    }
+        if (!isTokenExpired(token)) {
+            axiosInstance.defaults.headers.common['Authorization'] = token; // Axios 기본 헤더 설정
+            isLoggedIn.value = true;
+        } else {
+            // 만약 토큰이 만료되었다면 새로운 액세스 토큰을 발급받음
+            const newToken = await handleReissueToken();
+            if (!newToken) {
+                isLoggedIn.value = false;
+                document.cookie = 'refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Strict';
+                axiosInstance.defaults.headers.common['Authorization'] = null; // Authorization 헤더 초기화
+                localStorage.removeItem('accessToken');
+                window.location.href = '/'
+            } else {
+                isLoggedIn.value = true;
+                axiosInstance.defaults.headers.common['Authorization'] = newToken;
+                localStorage.setItem('accessToken', newToken);
+            }
+        }
+    };
 
     // 로그인 처리
     const handleLogin = async (username, password) => {
         try {
-            const response = await instance.post('/login', { username, password });
-            const token = response.headers['access'];
-            document.cookie = `access=${token}; path=/`; // 토큰을 쿠키에 저장
-            isLoggedIn.value = true;
-            accessToken.value = token;
-            return false;
+            const response = await axiosInstance.post('/login', { username, password });
+            // 'Authorization' 헤더에서 'Bearer' 토큰 추출
+            const token = response.headers['authorization'];
+
+            if (token) {
+                axiosInstance.defaults.headers.common['Authorization'] = token;
+                // 로컬 스토리지에 토큰 저장
+                localStorage.setItem('accessToken', token);
+                isLoggedIn.value = true;
+                return false; // 로그인 성공
+            }
+            throw new Error('Access Token not received');
         } catch (error) {
-            alert('로그인 실패')
             console.error('로그인 실패:', error);
-            return true;
+            alert('로그인 실패');
+            return true; // 로그인 실패
         }
     };
 
     // 로그아웃 처리
     const handleLogout = async () => {
-        const refreshToken = getCookie('refresh'); // 쿠키에서 토큰 가져오기
-        document.cookie = 'access=; path=/'; // 쿠키 삭제
-
+        document.cookie = 'refresh=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Strict';
         try {
-            const response = await instance.post('/logout', {}, {
-                headers: {
-                    'refresh': `${refreshToken}` // 토큰을 헤더에 추가
-                }
-            });
+            const response = await axiosInstance.post('/logout', {}, {});
+            // 로그아웃 후 상태 초기화
             isLoggedIn.value = false;
-            accessToken.value = null;
-            // 로그아웃 성공 후 메인 페이지로 리다이렉트
-            window.location.href = '/';  // 메인 페이지로 이동
+            axiosInstance.defaults.headers.common['Authorization'] = null; // Authorization 헤더 초기화
+            localStorage.removeItem('accessToken');
+            window.location.href = '/'; // 메인 페이지로 이동
         } catch (err) {
             console.log('로그아웃 실패:', err);
             alert('로그아웃 실패');
         }
-    }
+    };
 
     return {
         isLoggedIn,
-        accessToken,
         checkToken,
         handleLogin,
         handleLogout,

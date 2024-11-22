@@ -1,5 +1,6 @@
 
 import { createRouter, createWebHistory } from 'vue-router';
+import {useAuth} from "@/composables/useAuth.js";
 import FrontView from '@/views/FrontView.vue';
 import MainView from '@/views/MainView.vue';
 import MainLeftView from '@/components/main/MainLeftView.vue';
@@ -86,13 +87,28 @@ const routes = [
       }
     ]
   }
-
-
 ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
 });
+
+// 라우터 가드에서 checkToken 실행
+// const { isLoggedIn, checkToken } = useAuth();
+// router.beforeEach(async (to, from, next) => {
+//   // 메인 페이지 이후의 경로인지 확인
+//   if (to.path.startsWith('/main')) {
+//     await checkToken(); // `main` 경로 이후부터 실행
+//
+//     // 로그인 필요 여부에 따라 라우트 제어
+//     // if (to.meta.requiresAuth && !isLoggedIn.value) {
+//     if (!isLoggedIn.value) {
+//       alert('로그인이 필요합니다.');
+//       return next({ name: 'front' }); // 로그인 페이지로 리다이렉트
+//     }
+//   }
+//   next(); // 라우트 진행
+// });
 
 export default router;
