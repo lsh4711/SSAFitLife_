@@ -40,7 +40,7 @@
     const lists = ref([]);
 
     const requestPostList = async()=>{
-        const { data } =await axios.get("http://localhost:8080/api-post/post");
+        const { data } =await axios.get("http://localhost:8080/post/post");
         lists.value = data;
     }
 
