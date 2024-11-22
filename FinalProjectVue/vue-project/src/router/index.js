@@ -13,7 +13,6 @@ import PostListView from '@/components/mainBody/post/PostList.vue';
 import PostDetailView from '@/components/mainBody/post/PostDetail.vue';
 import PostRegistView from '@/components/mainBody/post/PostRegist.vue';
 import {useAuth} from "@/composables/useAuth.js";
-import {onMounted} from "vue";
 
 const routes = [
   {

@@ -43,7 +43,10 @@ public class ReissueServiceImpl implements ReissueService {
 
         // expired check
         try {
-            jwtUtil.isExpired(refresh);
+            if(jwtUtil.isExpired(refresh)) {
+                refreshTokenService.removeRefreshTokenByRefresh(refresh);
+                return new ResponseEntity<>("Refresh token expired, please log in again", HttpStatus.UNAUTHORIZED);  // 401 응답 코드
+            }
         } catch (ExpiredJwtException e) {
             return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
         }
@@ -68,36 +71,36 @@ public class ReissueServiceImpl implements ReissueService {
         System.out.println("memNo = " + memNo);
 
         // make new JWT
-        String newAccess = jwtUtil.createJwt("access", username, role, memNo, 6000L);
-        String newRefresh = jwtUtil.createJwt("refresh", username, role, memNo, 86400000L);
-
-        // Refresh 토큰 저장 (기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장)
-        refreshTokenService.removeRefreshTokenByRefresh(refresh);
-        addRefreshEntity(memNo, newRefresh, 86400000L);
+        String newAccess = jwtUtil.createJwt("access", username, role, memNo, 600L);
+//        String newRefresh = jwtUtil.createJwt("refresh", username, role, memNo, 86400000L);
+//        // Refresh 토큰 저장 (기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장)
+//        refreshTokenService.removeRefreshTokenByRefresh(refresh);
+//        addRefreshEntity(memNo, newRefresh, 86400000L);
 
         // response
         response.setHeader("Authorization", "Bearer " + newAccess);
-        response.addCookie(createCookie("refresh", newRefresh));
+//        response.addCookie(createCookie("refresh", newRefresh));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private void addRefreshEntity(Integer memNo, String refresh, Long expiredMs) {
-        Date date = new Date(System.currentTimeMillis() + expiredMs);
-
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setMemNo(memNo);
-        refreshToken.setRefreshToken(refresh);
-        refreshToken.setExpiration(date);
-
-        refreshTokenService.saveToken(refreshToken);
-    }
-
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24 * 60 * 60); // 1일
-        cookie.setHttpOnly(true);
-        //cookie.setSecure(true); // HTTPS일 경우
-        return cookie;
-    }
+//    private void addRefreshEntity(Integer memNo, String refresh, Long expiredMs) {
+//        Date date = new Date(System.currentTimeMillis() + expiredMs);
+//
+//        RefreshToken refreshToken = new RefreshToken();
+//        refreshToken.setMemNo(memNo);
+//        refreshToken.setRefreshToken(refresh);
+//        refreshToken.setExpiration(date);
+//
+//        refreshTokenService.saveToken(refreshToken);
+//    }
+//
+//    private Cookie createCookie(String key, String value) {
+//        Cookie cookie = new Cookie(key, value);
+//        cookie.setMaxAge(24 * 60 * 60); // 1일
+//        cookie.setHttpOnly(true);
+//        //cookie.setSecure(true); // HTTPS일 경우
+//        cookie.setPath("/");
+//        return cookie;
+//    }
 }
