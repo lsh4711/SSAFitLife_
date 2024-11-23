@@ -34,5 +34,4 @@ public class ReissueController {
 
         return reissueService.reissueTokens(request, response);
     }
-
 }
