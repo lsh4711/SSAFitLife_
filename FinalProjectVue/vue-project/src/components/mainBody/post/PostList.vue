@@ -10,7 +10,6 @@
         </div>
 
         <div>
-
             <div v-for="list in lists" :key="list.postNo">
                 <RouterLink :to="{ name: 'postDetail' , params:{postNo: list.postNo}}" custom>
                     <template #default="{ navigate }">
@@ -26,7 +25,23 @@
                 </RouterLink>
             </div>
         </div>
+        
     </div>
+    <div class="footer">
+    <span class="button">
+        <RouterLink class="regist-button" :to="{ name: 'postRegist'}">등록</RouterLink>
+    </span>
+    <span class="search-standard">
+        <select v-model="searchStandard">
+            <option>제목</option>
+            <option>내용</option>
+            <option>작성자</option>
+        </select>
+        <input type="text" :placeholder="`검색할 ${searchStandard} 입력`" />
+        <button>검색</button>
+    </span>
+    </div>
+    
 </template>
 
 <script setup>
@@ -38,6 +53,7 @@
     const category = ref(route.params.category)
     const currentView = ref(route.params.currentView)
     const lists = ref([]);
+    const searchStandard = ref('제목');
 
     const requestPostList = async()=>{
         const { data } =await axios.get("http://localhost:8080/post/post");
@@ -57,6 +73,34 @@
 </script>
 
 <style scoped>
+    input{
+        width: 200px;
+    }
+    .footer{
+        display: flex;
+        margin-top: 10px;
+    }
+    .button{
+    display: flex;
+    margin-right: auto;
+    justify-content: flex-end;
+  }
+  .regist-button{
+    color: blue;
+    text-decoration: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    color: white;
+    background-color: #97d4e9;
+    border-radius: 35px;
+    width: 64px;
+    height: 27px;
+    margin: 10px;
+  }
+
     .header,.post{
         display: flex;
         font-size: 18px;

@@ -1,9 +1,9 @@
 <template>
     <div class="main" >
-        <div class="weight" v-if="category === 'weightMange'">
+        <div class="weight" v-if="category === 'weightManage'">
             <WeightView/>
         </div>
-        <div class="diet" v-if="category === 'dietMange'">
+        <div class="diet" v-if="category === 'dietManage'">
             <DietView/>
         </div>
         <div class="product" v-if="category === 'productRecommend'">

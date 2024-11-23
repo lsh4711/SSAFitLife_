@@ -6,13 +6,13 @@
         <RouterLink class="link" :to="{name: 'front'}">
             <img src="/homeButton.png" alt="Home" /><br>홈
         </RouterLink>
-        <RouterLink :class="{ select : category==='weightMange'}" class="link" :to="{name: 'main',params:{category:'weightMange',currentView:'weightMange'}}">
+        <RouterLink :class="{ select : category==='weightManage'}" class="link" :to="{name: 'weightManage',params:{category:'weightManage',currentView:'weightManage'}}">
             <img src="/weightMangeButton.png" alt="WeightMange" /><br>체중관리
         </RouterLink>
-        <RouterLink :class="{ select : category==='dietMange'}" class="link" :to="{name: 'main', params: {category:'dietMange',currentView:'dietPlan'}}">
+        <RouterLink :class="{ select : category==='dietManage'}" class="link" :to="{name: 'dietPlan', params: {category:'dietManage',currentView:'dietPlan'}}">
             <img src="/dietMangeButton.png" alt="DietMange" /><br>식단관리
         </RouterLink>
-        <RouterLink :class="{ select : category==='productRecommend'}" class="link" :to="{name: 'main' , params: {category:'productRecommend',currentView:'sup'}}">
+        <RouterLink :class="{ select : category==='productRecommend'}" class="link" :to="{name: 'sup' , params: {category:'productRecommend',currentView:'sup'}}">
             <img src="/productRecommendButton.png" alt="ProductRecommend" /><br>제품추천
         </RouterLink>
         <RouterLink :class="{ select : category==='post'}"class="link" :to="{name: 'postList' , params: {category:'post',currentView:'post'}}">

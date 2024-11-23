@@ -1,6 +1,6 @@
 <template>
     <div>
-        제품추천 뷰
+        <RouterView/>
     </div>
 </template>
 
