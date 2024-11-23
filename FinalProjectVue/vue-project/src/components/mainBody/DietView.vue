@@ -1,6 +1,11 @@
 <template>
     <div>
         식단관리 뷰
+      <RouterLink
+          :to="{ name: 'DietTemp', params: { category: 'dietMange', currentView: 'dietPlan' } }">
+        Go to Diet Temp
+      </RouterLink>
+      <RouterView/>
     </div>
 </template>
 

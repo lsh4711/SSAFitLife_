@@ -6,10 +6,10 @@
         <h1 class="title">체중관리</h1>
         <div class="content1">
           <div class="content">
-            <RouterLink :to="{name: 'main' ,params: {category:'weightMange',currentView:'weightMange'}}" class="link">체중 관리</RouterLink> <a class="arrow">></a>
+            <RouterLink :to="{name: 'main' ,params: {category:'weightMange',currentView:'main'}}" class="link">체중 관리</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
-            <RouterLink :to="{name: 'main', params: {category:'weightMange',currentView:'bodyRecord'}}" class="link">체조성 기록</RouterLink> <a class="arrow">></a>  
+            <RouterLink :to="{name: 'main', params: {category:'weightMange',currentView:'bodyRecord'}}" class="link">체조성 기록</RouterLink> <a class="arrow">></a>
           </div>
           <div class="content">
             <RouterLink :to="{name: 'main', params: {category:'weightMange',currentView:'activityMange'}}" class="link">활동관리</RouterLink> <a class="arrow">></a>

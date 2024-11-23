@@ -12,6 +12,7 @@ import PostView from '@/components/mainBody/PostView.vue';
 import PostListView from '@/components/mainBody/post/PostList.vue';
 import PostDetailView from '@/components/mainBody/post/PostDetail.vue';
 import PostRegistView from '@/components/mainBody/post/PostRegist.vue';
+import DietTemp from "@/components/mainBody/diet/DietTemp.vue";
 import {useAuth} from "@/composables/useAuth.js";
 
 const routes = [
@@ -26,17 +27,7 @@ const routes = [
     component: MainView,
     children: [
       {
-        path:'main-left',
-        name:'mainLeft',
-        component: MainLeftView,
-      },
-      { 
-        path:'main-header',
-        name:'mainHeader',
-        component: MainHeaderView,
-      },
-      {
-        path:'main-body',
+        path:'body',
         name:'mainBody',
         component: MainBodyView,
         children:[
@@ -49,6 +40,13 @@ const routes = [
             path:'diet',
             name:'diet',
             component: DietView,
+            children: [
+              {
+                path:'diet-temp',
+                name:'DietTemp',
+                component: DietTemp
+              },
+            ]
           },
           {
             path:'product',
