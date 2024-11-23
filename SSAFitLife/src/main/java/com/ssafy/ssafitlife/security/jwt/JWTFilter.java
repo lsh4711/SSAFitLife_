@@ -114,12 +114,11 @@ public class JWTFilter extends OncePerRequestFilter {
         user.setRole(role);
         user.setMemNo(memNo);
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
+        return new UsernamePasswordAuthenticationToken(
                 customUserDetails,
                 null,
                 customUserDetails.getAuthorities()
         );
-        return authentication;
     }
 
 
