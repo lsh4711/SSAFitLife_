@@ -1,7 +1,7 @@
 <template>
     <div class="post">
-          <RouterView/>
     </div>
+  <RouterView/>
 </template>
 
 <script setup>
@@ -11,17 +11,15 @@ import PostList from './post/PostList.vue';
 import PostDetail from './post/PostDetail.vue';
 import PostRegist from './post/PostRegist.vue';
 
-  const route = useRoute()
-  const category = ref(route.params.category)
-  const currentView = ref(route.params.currentView)
+const route = useRoute()
+const currentMenu = ref('');
+const currentView = ref('');
 
-  watch(()=>route.params.category,(newcategory)=>{
-    category.value = newcategory
-  })
-  watch(()=>route.params.currentView,(newcurrentView)=>{
-    currentView.value = newcurrentView
-  })
-
+watch(() => route.path, (path) => {
+  const [_, menu, view] = path.split('/');
+  currentMenu.value = menu;
+  currentView.value = view;
+}, {immediate: true});
 </script>
 
 <style scoped>

@@ -1,84 +1,62 @@
-
-import { createRouter, createWebHistory } from 'vue-router';
+import DietView from '@/components/mainBody/DietView.vue';
+import PostDetail from "@/components/mainBody/post/PostDetail.vue";
+import PostList from "@/components/mainBody/post/PostList.vue";
+import PostRegist from "@/components/mainBody/post/PostRegist.vue";
+import PostView from "@/components/mainBody/PostView.vue";
+import ProductView from "@/components/mainBody/ProductView.vue";
+import WeightView from '@/components/mainBody/WeightView.vue';
 import FrontView from '@/views/FrontView.vue';
 import MainView from '@/views/MainView.vue';
-import MainLeftView from '@/components/main/MainLeftView.vue';
-import MainHeaderView from '@/components/main/MainHeaderView.vue';
-import MainBodyView from '@/components/main/MainBodyView.vue';
-import WeightView from '@/components/mainBody/WeightView.vue';
-import DietView from '@/components/mainBody/DietView.vue';
-import ProductView from '@/components/mainBody/ProductView.vue';
-import PostView from '@/components/mainBody/PostView.vue';
-import PostListView from '@/components/mainBody/post/PostList.vue';
-import PostDetailView from '@/components/mainBody/post/PostDetail.vue';
-import PostRegistView from '@/components/mainBody/post/PostRegist.vue';
-import DietTemp from "@/components/mainBody/diet/DietTemp.vue";
-import {useAuth} from "@/composables/useAuth.js";
+import {createRouter, createWebHistory} from 'vue-router';
 
 const routes = [
-  {
-    path: '/',
-    name: 'front',
-    component: FrontView,
-  },
-  {
-    path: '/main/:category/:currentView',
-    name: 'main',
-    component: MainView,
-    children: [
-      {
-        path:'body',
-        name:'mainBody',
-        component: MainBodyView,
-        children:[
-          {
-            path:'weight',
-            name:'weight',
-            component: WeightView,
-          },
-          {
-            path:'diet',
-            name:'diet',
-            component: DietView,
-            children: [
-              {
-                path:'diet-temp',
-                name:'DietTemp',
-                component: DietTemp
-              },
-            ]
-          },
-          {
-            path:'product',
-            name:'product',
-            component: ProductView,
-          },
-          {
-            path:'post',
-            name:'post',
-            component: PostView,
-            children:[
-              {
-                path:'post-list',
-                name:'postList',
-                component: PostListView,
-              },
-              {
-                path:'post-detail/:postNo',
-                name:'postDetail',
-                component: PostDetailView,
-              },
-              {
-                path:'post-regist',
-                name:'postRegist',
-                component: PostRegistView,
-              }
-            ]
-          }
+    {
+        path: '/',
+        name: 'front',
+        component: FrontView,
+    },
+    {
+        path: '/',
+        name: 'menus',
+        component: MainView,
+        children: [
+            {
+                path: 'weight-manage',
+                component: WeightView,
+                children: [
+                    {path: 'weight-manage', component: WeightView},
+                    {path: 'body-record', component: WeightView},
+                    {path: 'activity-manage', component: WeightView},
+                ]
+            },
+            {
+                path: 'diet-manage',
+                component: DietView,
+                children: [
+                    {path: 'diet-plan', component: DietView},
+                    {path: 'millprep-assist', component: DietView},
+                    {path: 'sup-use', component: DietView},
+                ]
+            },
+            {
+                path: 'product-recommend',
+                component: ProductView,
+                children: [
+                    {path: 'sup', component: ProductView},
+                    {path: 'chicken-breast', component: ProductView},
+                ]
+            },
+            {
+                path: 'board',
+                component: PostView,
+                children: [
+                    {path: 'posts', component: PostList},
+                    {path: 'posts/regist', component: PostRegist},
+                    {path: 'posts/:postId', component: PostDetail}
+                ]
+            },
         ]
-      }
-    ]
-  }
+    }
 ];
 
 const router = createRouter({
